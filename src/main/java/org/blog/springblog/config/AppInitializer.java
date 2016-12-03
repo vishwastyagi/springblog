@@ -4,7 +4,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
-import org.blog.springblog.event.LoadDBProperties;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -16,10 +15,10 @@ public class AppInitializer implements WebApplicationInitializer {
 	public void onStartup(ServletContext servletContext)
 			throws ServletException {
 		// Create the 'root' Spring application context
-		System.out.println("Inside AppInitialzer");
+		System.out.println("Inside AppInitialzer");   // first this will be called
 		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
 		rootContext.register(RootContextConfig.class);
-		rootContext.addApplicationListener(new LoadDBProperties());
+		//rootContext.addApplicationListener(new LoadDBProperties());
 
 		// Manage the lifecycle of the root application context
 		servletContext.addListener(new ContextLoaderListener(rootContext));
@@ -53,7 +52,7 @@ public class AppInitializer implements WebApplicationInitializer {
 		dispatcher.addMapping("/");
 		dispatcher.setLoadOnStartup(1);
 
-		System.out.println("\n\n onStartup....\n\n");
+		System.out.println("\n\n onStartup....\n\n"); // second this will be called
 		/*
 		 * XmlWebApplicationContext appContext = new XmlWebApplicationContext();
 		 * appContext

@@ -1,7 +1,11 @@
 package org.blog.springblog.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -9,6 +13,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 // @ComponentScan("org.blog.springblog")
@@ -41,7 +47,7 @@ public class DispatcherContextConfig extends WebMvcConfigurerAdapter {
 	 */
 	@Bean
     public ViewResolver htmlViewResolver() {
-		System.out.println("htmlViewResolver method");
+		System.out.println("htmlViewResolver method");  // sixth this will be called
         InternalResourceViewResolver viewResolver= new ChainableInternalResourceViewResolver();
         viewResolver.setPrefix(VIEW_DIR_HTML);
         viewResolver.setSuffix(VIEW_EXTN_HTML);
@@ -55,7 +61,7 @@ public class DispatcherContextConfig extends WebMvcConfigurerAdapter {
 	 */
 	@Bean
     public ViewResolver jspViewResolver() {
-		System.out.println(" jspViewResolver method ");
+		System.out.println(" jspViewResolver method ");  // seventh this will be called
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setViewClass(JstlView.class);
         viewResolver.setPrefix(VIEW_DIR_JSP);
@@ -67,10 +73,52 @@ public class DispatcherContextConfig extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		System.out.println("\n\nInside addResourceHandlers.....\n\n");
+		System.out.println("\n\nInside addResourceHandlers.....\n\n"); // fourth this will be called
 		registry.addResourceHandler("/resources/**").addResourceLocations(
 				"/resources/");
 	}
+	
+	
+	/*public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(resolver());
+	}
+	
+	 @Bean
+	  public ServletWebArgumentResolverAdapter resolver() {
+	      return new ServletWebArgumentResolverAdapter(pageable());
+	  }
+
+
+	  @Bean
+	  public PageableArgumentResolver pageable() {
+	      return new PageableArgumentResolver();
+	  }
+	*/
+
+
+	@Override
+ 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		System.out.println("Inside configureMessageConverters");
+		converters.add(converter());
+	}
+	
+	@Bean
+	  public MappingJackson2HttpMessageConverter converter() {
+	      MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+	      converter.setObjectMapper(mapper());
+	      System.out.println("Inside converter "+converter);
+	      return converter;
+	  }
+	/*
+	  * Provides the Jackson ObjectMapper with custom configuration for our JSON serialization.
+	  * @return The Jackson object mapper with non-null serialization configured
+	  */
+	@Bean
+	  public ObjectMapper mapper() {
+	      return new ObjectMapper();
+	  }
+	
+	
 
 	/**
 	 * Add view controllers to create a direct mapping between a URL path and
@@ -95,6 +143,7 @@ public class DispatcherContextConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void configureDefaultServletHandling(
 			DefaultServletHandlerConfigurer configurer) {
+		System.out.println("\n\ninside configureDefaultServletHandling\n\n"); //fifth this will be called
 		configurer.enable();
 	}
 }

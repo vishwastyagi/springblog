@@ -12,12 +12,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Scope("request")
 public class LoginController {
 	private static final Logger logger = LogManager.getLogger(LoginController.class.getName());
-	@RequestMapping(value={"/*"},method=RequestMethod.GET)
-	public ModelAndView welcomePage(){
-		logger.debug("Inside welcomePage method");
+	@RequestMapping(value={"/login"},method=RequestMethod.POST)
+	public ModelAndView login(){
+		logger.debug("Inside login method");
 		ModelAndView modelAndView=new ModelAndView();
-		//modelAndView.setViewName("pages/welcomePage");
-		modelAndView.setViewName("jsp/welcomePage");
+		modelAndView.setViewName("pages/home");
+		//modelAndView.setViewName("jsp/welcomePage");
 		logger.debug("Exiting welcomePage method");
 		return modelAndView;
 	}

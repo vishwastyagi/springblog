@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
@@ -18,6 +19,7 @@ public class RootContextConfig {
 
 	@Bean
 	public static PropertyPlaceholderConfigurer properties() {
+		System.out.println("Inside PropertyPlaceholderConfigurer properties");// third this will be called
 		PropertyPlaceholderConfigurer propertyPlaceholderConfigurer = new PropertyPlaceholderConfigurer();
 		ClassPathResource[] resources = new ClassPathResource[] {
 				new ClassPathResource("jdbc.properties"),
@@ -25,12 +27,13 @@ public class RootContextConfig {
 		propertyPlaceholderConfigurer.setLocations(resources);
 		// propertyPlaceholderConfigurer.setIgnoreUnresolvablePlaceholders( true
 		// );
-		System.out.println("\n\nInside properties\n\n");
+		//System.out.println("\n\nInside properties\n\n");
 		return propertyPlaceholderConfigurer;
 	}
 
 	@Bean(name = "dataSource")
 	public DataSource getDataSource() {
+		System.out.println("Inside getDataSource"); // eight this will be called
 		BasicDataSource dataSource = new BasicDataSource();
 		System.out.println("\n\njdbcDriver= " + jdbcDriver + " \n jdbcUrl= "
 				+ jdbcUrl + " \njdbcUsername= " + jdbcUsername
@@ -42,6 +45,33 @@ public class RootContextConfig {
 		return dataSource;
 
 	}
+	
+	@Bean(name="jdbcTemplate")
+	public JdbcTemplate createJdbcTemplate(DataSource dataSource){
+		System.out.println("Inside JdbcTemplate");
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(dataSource);
+		System.out.println(jdbcTemplate.getDataSource()+"  "+getDataSource());
+		return new JdbcTemplate(dataSource);
+	}
+	/*@Override
+	  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+	        argumentResolvers.add(resolver());
+	  }
+
+	  @Bean
+	  public ServletWebArgumentResolverAdapter resolver() {
+	      return new ServletWebArgumentResolverAdapter(pageable());
+	  }
+
+
+	  @Bean
+	  public PageableArgumentResolver pageable() {
+	      return new PageableArgumentResolver();
+	  }
+
+*/
+	
+	
 
 	@Value("${jdbc.driver}")
 	private String jdbcDriver;
